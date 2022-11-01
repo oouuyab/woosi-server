@@ -22,11 +22,11 @@ export class UserService {
   ) {}
 
   private async _findOneByEmail(email: string): Promise<UserEntity> {
-    return await this.userRepository.findOne(email);
+    return await this.userRepository.findOne({ where: { email } });
   }
 
   private async _findOneByHpNo(hpNo: string): Promise<UserEntity> {
-    return await this.userRepository.findOne(hpNo);
+    return await this.userRepository.findOne({ where: { hpNo } });
   }
 
   private async _createUserValidator(
