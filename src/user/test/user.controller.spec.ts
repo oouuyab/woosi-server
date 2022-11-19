@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from '../user.controller';
-import { UserService } from '../user.service';
+import { UserController } from '../controller/user.controller';
+import { UserService } from '../service/user.service';
 import { faker } from '@faker-js/faker';
 import { ulid } from 'ulid';
 import { USER_STATUS, USER_TYPE } from '../../common/enum';

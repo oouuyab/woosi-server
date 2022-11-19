@@ -1,11 +1,11 @@
 import { Controller, Post, Body, Get, Query } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserReqDto, CreateUserResDto } from './dto/create-user.dto';
+import { UserService } from '../service/user.service';
+import { CreateUserReqDto, CreateUserResDto } from '../dto/create-user.dto';
 import {
   FindUserByEmailReqDto,
   FindUserByHpNoReqDto,
   FindUserResDto,
-} from './dto/find-user.dto';
+} from '../dto/find-user.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('User')

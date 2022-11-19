@@ -2,17 +2,17 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ulid } from 'ulid';
-import { CreateUserReqDto, CreateUserResDto } from './dto/create-user.dto';
-import { UserEntity } from './entities/user.entity';
+import { CreateUserReqDto, CreateUserResDto } from '../dto/create-user.dto';
+import { UserEntity } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { USER_STATUS, USER_TYPE } from '../common/enum';
+import { USER_STATUS, USER_TYPE } from '../../common/enum';
 import * as _ from 'lodash';
-import { ERROR_MSG } from '../common/error-msg';
+import { ERROR_MSG } from '../../common/error-msg';
 import {
   FindUserByEmailReqDto,
   FindUserByHpNoReqDto,
   FindUserResDto,
-} from './dto/find-user.dto';
+} from '../dto/find-user.dto';
 
 @Injectable()
 export class UserService {
