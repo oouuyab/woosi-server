@@ -5,7 +5,7 @@ import { ERROR_MSG } from '../../common/error-msg';
 import { UserEntity } from '../../user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { USER_STATUS } from '../../common/enum';
+import { ROLE, USER_STATUS, USER_TYPE } from '../../common/enum';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +31,19 @@ export class AuthService {
         throw new UnauthorizedException(ERROR_MSG.LEAVE_USER);
       default:
         return true;
+    }
+  }
+
+  private _getRole(userType: USER_TYPE): ROLE {
+    switch (userType) {
+      case USER_TYPE.DEFAULT:
+        return ROLE.COMMON_USER;
+      case USER_TYPE.HOST:
+        return ROLE.HOST;
+      case USER_TYPE.ADMIN:
+        return ROLE.ADMIN;
+      default:
+        throw new UnauthorizedException();
     }
   }
 
@@ -75,6 +88,7 @@ export class AuthService {
       id: user.id,
       userType: user.userType,
       userStatus: user.userStatus,
+      roles: [this._getRole(user.userType)],
     };
 
     return {

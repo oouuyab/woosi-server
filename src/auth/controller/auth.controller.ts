@@ -4,6 +4,9 @@ import { AuthService } from '../service/auth.service';
 import { LoginAuthResDto } from '../dto/login-auth.dto';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { LocalAuthGuard } from '../guard/local-auth.guard';
+import { Roles } from '../../roles/roles.decorator';
+import { RolesGuard } from '../../roles/roles.guard';
+import { ROLE } from '../../common/enum';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -23,6 +26,14 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req): Promise<LoginAuthResDto> {
+    return await this.authService.login(req.user);
+  }
+
+  @ApiTags('Auth')
+  @Roles(ROLE.COMMON_USER, ROLE.HOST)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('/info')
+  async getUserInfo(@Request() req): Promise<LoginAuthResDto> {
     return await this.authService.login(req.user);
   }
 }
