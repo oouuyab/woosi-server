@@ -29,33 +29,31 @@ export class UserService {
     return await this.userRepository.findOne({ where: { hpNo } });
   }
 
+  private _userStatusValidator(userStatus: USER_STATUS): void {
+    switch (userStatus) {
+      case USER_STATUS.ACTIVE:
+        throw new BadRequestException(ERROR_MSG.ALREADY_EXIST_USER);
+      case USER_STATUS.INACTIVE:
+        throw new BadRequestException(ERROR_MSG.INACTIVE_USER);
+      case USER_STATUS.LEAVE:
+        throw new BadRequestException(ERROR_MSG.LEAVE_USER);
+      default:
+    }
+  }
+
   private async _createUserValidator(
     createUserDto: CreateUserReqDto,
   ): Promise<void> {
     const userInfoByEmail = await this._findOneByEmail(createUserDto.email);
     const isExistUserByEmail = !_.isEmpty(userInfoByEmail);
-
     if (isExistUserByEmail) {
-      if (userInfoByEmail.userStatus === USER_STATUS.ACTIVE) {
-        throw new BadRequestException(ERROR_MSG.ALREADY_EXIST_USER);
-      } else if (userInfoByEmail.userStatus === USER_STATUS.INACTIVE) {
-        throw new BadRequestException(ERROR_MSG.INACTIVE_USER);
-      } else if (userInfoByEmail.userStatus === USER_STATUS.LEAVE) {
-        throw new BadRequestException(ERROR_MSG.LEAVE_USER);
-      }
+      this._userStatusValidator(userInfoByEmail.userStatus);
     }
 
     const userInfoByHpNo = await this._findOneByHpNo(createUserDto.hpNo);
     const isExistUserByHpNo = !_.isEmpty(userInfoByHpNo);
-
     if (isExistUserByHpNo) {
-      if (userInfoByHpNo.userStatus === USER_STATUS.ACTIVE) {
-        throw new BadRequestException(ERROR_MSG.ALREADY_EXIST_USER);
-      } else if (userInfoByHpNo.userStatus === USER_STATUS.INACTIVE) {
-        throw new BadRequestException(ERROR_MSG.INACTIVE_USER);
-      } else if (userInfoByHpNo.userStatus === USER_STATUS.LEAVE) {
-        throw new BadRequestException(ERROR_MSG.LEAVE_USER);
-      }
+      this._userStatusValidator(userInfoByHpNo.userStatus);
     }
   }
 
