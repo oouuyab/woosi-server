@@ -9,6 +9,9 @@ async function bootstrap() {
 
   SwaggerConfig(app);
 
+  // TODO: cors 설정
+  app.enableCors();
+
   app.use(helmet());
   await app.listen(process.env.PORT);
 }
