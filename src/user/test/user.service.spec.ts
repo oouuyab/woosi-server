@@ -84,7 +84,7 @@ describe('UserService', () => {
     );
   });
 
-  it('유저 생성 - email 중복 에러', async () => {
+  it('유저 생성 - hpNo 중복 에러', async () => {
     const sameHpNo = faker.phone.number('010########');
 
     jest.spyOn(mockUserRepository, 'findOne').mockResolvedValueOnce({
