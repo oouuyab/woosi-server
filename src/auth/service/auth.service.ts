@@ -6,6 +6,7 @@ import { UserEntity } from '../../user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ROLE, USER_STATUS, USER_TYPE } from '../../common/enum';
+import { LoginAuthResDto } from '../dto/login-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -55,6 +56,23 @@ export class AuthService {
     return true;
   }
 
+  async _generateAccessToken(payload): Promise<string> {
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: process.env.JWT_EXPIRE_IN,
+      secret: process.env.JWT_SECRET,
+    });
+
+    return accessToken;
+  }
+  async _generateRefreshToken(payload): Promise<string> {
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: process.env.JWT_REFRESH_EXPIRE_IN,
+      secret: process.env.JWT_REFRESH_SECRET,
+    });
+
+    return refreshToken;
+  }
+
   async validateUserById(id: string): Promise<Omit<UserEntity, 'pw'>> {
     const user = await this._findOneById(id);
     if (!user) {
@@ -83,7 +101,7 @@ export class AuthService {
     return result;
   }
 
-  async login(user: any) {
+  async login(user: any): Promise<LoginAuthResDto> {
     const payload = {
       id: user.id,
       userType: user.userType,
@@ -91,8 +109,26 @@ export class AuthService {
       roles: [this._getRole(user.userType)],
     };
 
-    return {
-      access_token: this.jwtService.sign(payload),
+    const refreshTokenPayload = {
+      id: user.id,
     };
+
+    return {
+      access_token: await this._generateAccessToken(payload),
+      refresh_token: await this._generateRefreshToken(refreshTokenPayload),
+    };
+  }
+
+  async getAccessToken(user: any): Promise<any> {
+    const { id, userType, userStatus } = await this.validateUserById(user.id);
+
+    const payload = {
+      id,
+      userType,
+      userStatus,
+      roles: [this._getRole(userType)],
+    };
+
+    return await this._generateAccessToken(payload);
   }
 }
