@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Redirect } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { CreateUserReqDto, CreateUserResDto } from '../dto/create-user.dto';
 import {
@@ -18,12 +18,11 @@ export class UserController {
   @ApiResponse({
     description: '유저를 생성한다.',
     status: 201,
-    type: CreateUserResDto,
   })
-  async create(
-    @Body() createUserDto: CreateUserReqDto,
-  ): Promise<CreateUserResDto> {
-    return await this.userService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserReqDto): Promise<void> {
+    await this.userService.create(createUserDto);
+
+    Redirect('/login', 301);
   }
 
   @Get('/email')
