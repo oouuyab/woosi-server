@@ -6,7 +6,7 @@ import { UserEntity } from '../../user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ROLE, USER_STATUS, USER_TYPE } from '../../common/enum';
-import { LoginAuthResDto } from '../dto/login-auth.dto';
+import { LoginAuthResDtoWithRefreshToken } from '../dto/login-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -101,7 +101,7 @@ export class AuthService {
     return result;
   }
 
-  async login(user: any): Promise<LoginAuthResDto> {
+  async login(user: any): Promise<LoginAuthResDtoWithRefreshToken> {
     const payload = {
       id: user.id,
       userType: user.userType,

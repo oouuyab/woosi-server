@@ -34,7 +34,7 @@ export class LoginAuthReqDto {
   pw: string;
 }
 
-export class LoginAuthResDto {
+export class LoginAuthResDtoWithRefreshToken {
   @ApiProperty({
     example: 'access_token',
     description: 'access_token',
@@ -52,4 +52,15 @@ export class LoginAuthResDto {
   @IsString()
   @IsJWT()
   'refresh_token': string;
+}
+
+export class LoginAuthResDto {
+  @ApiProperty({
+    example: 'access_token',
+    description: 'access_token',
+    required: true,
+  })
+  @IsString()
+  @IsJWT()
+  'access_token': string;
 }

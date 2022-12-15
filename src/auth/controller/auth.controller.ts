@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../service/auth.service';
 import { LoginAuthResDto } from '../dto/login-auth.dto';
 import { LocalAuthGuard } from '../guard/local-auth.guard';
 import { JwtRefreshAuthGuard } from '../guard/jwt-refresh-auth.guard';
 import { RefreshAuthResDto } from '../dto/refresh-auth.dto';
+import { Response } from 'express';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -23,8 +24,20 @@ export class AuthController {
   })
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req): Promise<LoginAuthResDto> {
-    return await this.authService.login(req.user);
+  async login(
+    @Request() req,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<LoginAuthResDto> {
+    const { access_token, refresh_token } = await this.authService.login(
+      req.user,
+    );
+
+    response.cookie('refresh_token', refresh_token, {
+      expires: new Date(new Date().getTime() + 30 * 1000),
+      httpOnly: true,
+    });
+
+    return { access_token };
   }
 
   @ApiTags('Auth')
