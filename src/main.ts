@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import SwaggerConfig from './config/swagger.config';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,6 +14,7 @@ async function bootstrap() {
   app.enableCors();
 
   app.use(helmet());
+  app.use(cookieParser());
   await app.listen(process.env.PORT);
 }
 bootstrap();
